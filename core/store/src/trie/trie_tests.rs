@@ -119,7 +119,8 @@ fn test_reads_with_incomplete_storage() {
             let key_prefix = &key[0..rng.gen_range(0, key.len() + 1)];
             println!("Testing TrieUpdateIterator over prefix {:?}", key_prefix);
             let trie_update_keys = |trie: Rc<Trie>| -> Result<_, StorageError> {
-                let trie_update = TrieUpdate::new(trie, state_root);
+                let mut trie = trie.clone();
+                let trie_update = TrieUpdate::new(&mut trie, state_root);
                 let keys = trie_update.iter(key_prefix)?.collect::<Result<Vec<_>, _>>()?;
                 Ok(keys)
             };

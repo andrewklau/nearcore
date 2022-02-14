@@ -428,7 +428,7 @@ pub fn migrate_14_to_15(path: &Path) {
         SyncTrieCache::new(),
         ShardUId::single_shard(),
     ));
-    let trie = Rc::new(Trie::new(trie_store, ShardUId::single_shard()));
+    let mut trie = Rc::new(Trie::new(trie_store, ShardUId::single_shard()));
 
     let mut store_update = store.store_update();
     let batch_size_limit = 10_000_000;
@@ -489,7 +489,7 @@ pub fn migrate_14_to_15(path: &Path) {
             // Step 1: local receipts
             new_execution_outcome_ids.extend(local_receipt_ids);
 
-            let mut state_update = TrieUpdate::new(trie.clone(), chunk.prev_state_root());
+            let mut state_update = TrieUpdate::new(&mut trie, chunk.prev_state_root());
 
             let mut process_receipt =
                 |receipt: &Receipt, state_update: &mut TrieUpdate| match &receipt.receipt {
