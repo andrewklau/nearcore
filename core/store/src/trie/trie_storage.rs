@@ -123,7 +123,7 @@ impl SyncTrieCache {
         guard.chunk_cache.clear();
     }
 
-    pub fn set_state(&self, state: CacheState) {
+    pub fn set_state(&mut self, state: CacheState) {
         let mut guard = self.0.lock().expect(POISONED_LOCK_ERR);
         guard.cache_state = state;
     }

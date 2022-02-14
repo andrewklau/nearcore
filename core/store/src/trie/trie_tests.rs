@@ -143,12 +143,6 @@ mod trie_cache_tests {
         ]
     }
 
-    // let changes = keys
-    //             .iter()
-    //             .cloned()
-    //             .enumerate()
-    //             .map(|(i, key)| (key.to_vec(), Some(vec![i as u8])))
-    //             .collect();
     fn create_trie(items: &[(Vec<u8>, Option<Vec<u8>>)]) -> (Rc<Trie>, CryptoHash) {
         let tries = create_tries();
         let shard_uid = ShardUId { version: 1, shard_id: 0 };
