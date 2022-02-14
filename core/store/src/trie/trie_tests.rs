@@ -1,12 +1,10 @@
-use crate::test_utils::{create_tries_complex, gen_changes, simplify_changes, test_populate_trie};
+use crate::test_utils::{simplify_changes, test_populate_trie};
 use crate::trie::trie_storage::{CachePosition, TrieMemoryPartialStorage, TrieStorage};
-use crate::{PartialStorage, Trie, TrieUpdate};
+use crate::{PartialStorage, Trie};
 use near_primitives::block::CacheState;
 use near_primitives::errors::StorageError;
 use near_primitives::hash::{hash, CryptoHash};
 use near_primitives::shard_layout::ShardUId;
-use rand::seq::SliceRandom;
-use rand::Rng;
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use std::fmt::Debug;

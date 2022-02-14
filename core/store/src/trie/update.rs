@@ -12,7 +12,6 @@ use crate::StorageError;
 use super::{Trie, TrieIterator};
 use near_primitives::block::CacheState;
 use near_primitives::trie_key::TrieKey;
-use std::rc::Rc;
 
 /// Key-value update. Contains a TrieKey and a value.
 pub struct TrieKeyValueUpdate {
@@ -61,10 +60,6 @@ impl TrieUpdate {
             storage.reset_chunk_cache();
         }
         TrieUpdate { trie, root, committed: Default::default(), prospective: Default::default() }
-    }
-
-    pub fn trie(&self) -> &Trie {
-        self.trie.as_ref()
     }
 
     pub fn get(&self, key: &TrieKey) -> Result<Option<Vec<u8>>, StorageError> {
