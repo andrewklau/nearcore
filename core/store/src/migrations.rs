@@ -422,12 +422,6 @@ pub fn migrate_13_to_14(path: &Path) {
 /// Make execution outcome ids in `ColOutcomeIds` ordered by replaying the chunks.
 pub fn migrate_14_to_15(path: &Path) {
     let store = create_store(path);
-    let trie_store = Box::new(TrieCachingStorage::new(
-        store.clone(),
-        SyncTrieCache::new(),
-        ShardUId::single_shard(),
-    ));
-    let mut trie = Trie::new(trie_store, ShardUId::single_shard());
 
     let mut store_update = store.store_update();
     let batch_size_limit = 10_000_000;
@@ -441,6 +435,12 @@ pub fn migrate_14_to_15(path: &Path) {
         for chunk_header in
             block.chunks().iter().filter(|h| h.height_included() == block.header().height())
         {
+            let trie_store = Box::new(TrieCachingStorage::new(
+                store.clone(),
+                SyncTrieCache::new(),
+                ShardUId::single_shard(),
+            ));
+            let trie = Trie::new(trie_store, ShardUId::single_shard());
             let execution_outcome_ids = <HashSet<CryptoHash>>::try_from_slice(&value).unwrap();
 
             let chunk = store

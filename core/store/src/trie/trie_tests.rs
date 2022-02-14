@@ -142,11 +142,10 @@ mod trie_cache_tests {
         ]
     }
 
-    fn create_trie(items: &[(Vec<u8>, Option<Vec<u8>>)]) -> (Rc<Trie>, CryptoHash) {
+    fn create_trie(items: &[(Vec<u8>, Option<Vec<u8>>)]) -> (Trie, CryptoHash) {
         let tries = create_tries();
         let shard_uid = ShardUId { version: 1, shard_id: 0 };
         let trie = tries.get_trie_for_shard(shard_uid);
-        let trie = Rc::new(trie);
         let state_root = Trie::empty_root();
         let trie_changes = simplify_changes(&items);
         let state_root = test_populate_trie(&tries, &state_root, shard_uid, trie_changes.clone());
@@ -157,7 +156,7 @@ mod trie_cache_tests {
     // For example, on testing set of keys `[b"aaa", b"abb", b"baa"]`, we expect 6 touched nodes to get value for the first
     // key: Branch -> Extension -> Branch -> Extension -> Leaf plus retrieving the value by its hash.
     fn get_touched_nodes_numbers(
-        trie: Rc<Trie>,
+        trie: Trie,
         state_root: CryptoHash,
         items: &[(Vec<u8>, Option<Vec<u8>>)],
     ) -> Vec<u64> {
@@ -206,8 +205,8 @@ mod trie_cache_tests {
     fn test_trie_cache_position_2() {
         let trie_items = test_trie_items();
         let trie_items = &trie_items[..1];
-        let (trie, state_root) = create_trie(trie_items);
-        let storage = trie.storage.as_caching_storage().unwrap();
+        let (mut trie, state_root) = create_trie(trie_items);
+        let storage = trie.storage.as_caching_storage_mut().unwrap();
         storage.cache.clear();
         let value = trie_items[0].1.as_ref().unwrap();
         let value_hash = hash(value);
