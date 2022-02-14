@@ -25,7 +25,7 @@ pub type TrieUpdates = BTreeMap<Vec<u8>, TrieKeyValueUpdate>;
 
 /// Provides a way to access Storage and record changes with future commit.
 pub struct TrieUpdate {
-    pub trie: Rc<Trie>,
+    pub trie: Trie,
     root: CryptoHash,
     committed: RawStateChanges,
     prospective: TrieUpdates,
@@ -56,18 +56,11 @@ impl<'a> TrieUpdateValuePtr<'a> {
 }
 
 impl TrieUpdate {
-    pub fn new(trie: &mut Rc<Trie>, root: CryptoHash) -> Self {
-        if let Some(trie) = Rc::get_mut(trie) {
-            if let Some(storage) = trie.storage.as_caching_storage_mut() {
-                storage.reset_chunk_cache();
-            }
+    pub fn new(mut trie: Trie, root: CryptoHash) -> Self {
+        if let Some(storage) = trie.storage.as_caching_storage_mut() {
+            storage.reset_chunk_cache();
         }
-        TrieUpdate {
-            trie: trie.clone(),
-            root,
-            committed: Default::default(),
-            prospective: Default::default(),
-        }
+        TrieUpdate { trie, root, committed: Default::default(), prospective: Default::default() }
     }
 
     pub fn trie(&self) -> &Trie {

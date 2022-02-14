@@ -1,5 +1,6 @@
 use std::cmp::max;
 use std::collections::{HashMap, HashSet};
+use std::ops::DerefMut;
 use std::rc::Rc;
 use std::sync::Arc;
 
@@ -1168,7 +1169,7 @@ impl Runtime {
     /// receivers) and incoming action receipts.
     pub fn apply(
         &self,
-        trie: Trie,
+        mut trie: Trie,
         root: CryptoHash,
         validator_accounts_update: &Option<ValidatorAccountsUpdate>,
         apply_state: &ApplyState,
@@ -1183,9 +1184,11 @@ impl Runtime {
             panic!("Can only patch state in sandbox mode");
         }
 
-        let mut trie = Rc::new(trie);
-        let initial_state = TrieUpdate::new(&mut trie, root);
-        let mut state_update = TrieUpdate::new(&mut trie, root);
+        let storage = trie.storage.as_caching_storage_mut().unwrap();
+        let trie2 = Trie { storage: Box::new(storage), counter: Default::default() };
+
+        let initial_state = TrieUpdate::new(trie, root);
+        let mut state_update = TrieUpdate::new(trie2, root);
         let mut stats = ApplyStats::default();
 
         if let Some(validator_accounts_update) = validator_accounts_update {

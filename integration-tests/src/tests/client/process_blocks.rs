@@ -4117,13 +4117,11 @@ mod storage_usage_fix_tests {
                 .get_chunk_extra(block.hash(), &ShardUId::single_shard())
                 .unwrap()
                 .state_root();
-            let trie = Rc::new(
-                env.clients[0]
-                    .runtime_adapter
-                    .get_trie_for_shard(0, block.header().prev_hash())
-                    .unwrap(),
-            );
-            let state_update = TrieUpdate::new(trie.clone(), root);
+            let trie = env.clients[0]
+                .runtime_adapter
+                .get_trie_for_shard(0, block.header().prev_hash())
+                .unwrap();
+            let state_update = TrieUpdate::new(trie, root);
             use near_primitives::account::Account;
             let mut account_test1_raw = state_update
                 .get(&TrieKey::Account { account_id: "test1".parse().unwrap() })
@@ -4316,12 +4314,10 @@ mod contract_precompilation_tests {
         let state_root = *chunk_extra.state_root();
 
         let viewer = TrieViewer::default();
-        let trie = Rc::new(
-            env.clients[1]
-                .runtime_adapter
-                .get_trie_for_shard(0, block.header().prev_hash())
-                .unwrap(),
-        );
+        let trie = env.clients[1]
+            .runtime_adapter
+            .get_trie_for_shard(0, block.header().prev_hash())
+            .unwrap();
         let state_update = TrieUpdate::new(trie, state_root);
 
         let mut logs = vec![];

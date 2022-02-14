@@ -49,11 +49,11 @@ impl ShardTries {
     }
 
     pub fn new_trie_update(&self, shard_uid: ShardUId, state_root: CryptoHash) -> TrieUpdate {
-        TrieUpdate::new(&mut Rc::new(self.get_trie_for_shard(shard_uid)), state_root)
+        TrieUpdate::new(self.get_trie_for_shard(shard_uid), state_root)
     }
 
     pub fn new_trie_update_view(&self, shard_uid: ShardUId, state_root: CryptoHash) -> TrieUpdate {
-        TrieUpdate::new(&mut Rc::new(self.get_view_trie_for_shard(shard_uid)), state_root)
+        TrieUpdate::new(self.get_view_trie_for_shard(shard_uid), state_root)
     }
 
     fn get_trie_for_shard_internal(&self, shard_uid: ShardUId, is_view: bool) -> Trie {
