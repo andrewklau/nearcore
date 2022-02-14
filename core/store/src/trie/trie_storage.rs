@@ -168,6 +168,10 @@ pub trait TrieStorage {
         None
     }
 
+    fn get_new_caching_storage(&self) -> Option<TrieCachingStorage> {
+        None
+    }
+
     fn as_recording_storage(&self) -> Option<&TrieRecordingStorage> {
         None
     }
@@ -324,6 +328,14 @@ impl TrieStorage for TrieCachingStorage {
 
     fn as_caching_storage_mut(&mut self) -> Option<&mut TrieCachingStorage> {
         Some(self)
+    }
+
+    fn get_new_caching_storage(&self) -> Option<TrieCachingStorage> {
+        Some(TrieCachingStorage {
+            store: self.store.clone(),
+            cache: self.cache.clone(),
+            shard_uid: self.shard_uid,
+        })
     }
 }
 

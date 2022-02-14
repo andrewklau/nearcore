@@ -1169,7 +1169,7 @@ impl Runtime {
     /// receivers) and incoming action receipts.
     pub fn apply(
         &self,
-        mut trie: Trie,
+        trie: Trie,
         root: CryptoHash,
         validator_accounts_update: &Option<ValidatorAccountsUpdate>,
         apply_state: &ApplyState,
@@ -1184,8 +1184,10 @@ impl Runtime {
             panic!("Can only patch state in sandbox mode");
         }
 
-        let storage = trie.storage.as_caching_storage_mut().unwrap();
-        let trie2 = Trie { storage: Box::new(storage), counter: Default::default() };
+        let trie2 = Trie {
+            storage: Box::new(trie.storage.get_new_caching_storage().unwrap()),
+            counter: Default::default(),
+        };
 
         let initial_state = TrieUpdate::new(trie, root);
         let mut state_update = TrieUpdate::new(trie2, root);
