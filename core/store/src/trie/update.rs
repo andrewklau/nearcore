@@ -185,7 +185,7 @@ impl TrieUpdate {
     }
 
     pub fn set_trie_cache_state(&mut self, state: CacheState) {
-        if let Some(storage) = self.trie.storage.as_caching_storage() {
+        if let Some(storage) = self.trie.storage.as_caching_storage_mut() {
             storage.cache.set_state(state);
         }
     }

@@ -184,8 +184,8 @@ mod trie_cache_tests {
     #[test]
     fn test_chunk_cache() {
         let trie_items = test_trie_items();
-        let (trie, state_root) = create_trie(&trie_items);
-        let storage = trie.storage.as_caching_storage().unwrap();
+        let (mut trie, state_root) = create_trie(&trie_items);
+        let storage = trie.storage.as_caching_storage_mut().unwrap();
         storage.cache.set_state(CacheState::CachingChunk);
         assert_eq!(get_touched_nodes_numbers(trie, state_root, &trie_items), vec![6, 2, 2]);
     }
@@ -194,8 +194,8 @@ mod trie_cache_tests {
     fn test_reset_chunk_cache() {
         let trie_items = test_trie_items();
         let trie_items = &trie_items[..1];
-        let (trie, state_root) = create_trie(trie_items);
-        let storage = trie.storage.as_caching_storage().unwrap();
+        let (mut trie, state_root) = create_trie(trie_items);
+        let storage = trie.storage.as_caching_storage_mut().unwrap();
         storage.cache.set_state(CacheState::CachingChunk);
         assert_eq!(get_touched_nodes_numbers(trie.clone(), state_root, trie_items), vec![2]);
         assert_eq!(get_touched_nodes_numbers(trie.clone(), state_root, trie_items), vec![0]);
