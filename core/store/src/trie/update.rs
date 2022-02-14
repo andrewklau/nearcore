@@ -1,3 +1,4 @@
+use std::borrow::BorrowMut;
 use std::collections::BTreeMap;
 use std::iter::Peekable;
 
@@ -56,11 +57,18 @@ impl<'a> TrieUpdateValuePtr<'a> {
 }
 
 impl TrieUpdate {
-    pub fn new(trie: Rc<Trie>, root: CryptoHash) -> Self {
-        if let Some(storage) = trie.storage.as_caching_storage() {
-            storage.reset_chunk_cache();
+    pub fn new(trie: &mut Rc<Trie>, root: CryptoHash) -> Self {
+        if let Some(trie) = Rc::get_mut(trie) {
+            if let Some(storage) = trie.storage.as_caching_storage_mut() {
+                storage.reset_chunk_cache();
+            }
         }
-        TrieUpdate { trie, root, committed: Default::default(), prospective: Default::default() }
+        TrieUpdate {
+            trie: trie.clone(),
+            root,
+            committed: Default::default(),
+            prospective: Default::default(),
+        }
     }
 
     pub fn trie(&self) -> &Trie {

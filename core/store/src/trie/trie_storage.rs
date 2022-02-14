@@ -164,6 +164,10 @@ pub trait TrieStorage {
         None
     }
 
+    fn as_caching_storage_mut(&mut self) -> Option<&mut TrieCachingStorage> {
+        None
+    }
+
     fn as_recording_storage(&self) -> Option<&TrieRecordingStorage> {
         None
     }
@@ -276,7 +280,7 @@ impl TrieCachingStorage {
         key
     }
 
-    pub fn reset_chunk_cache(&self) {
+    pub fn reset_chunk_cache(&mut self) {
         let mut guard = self.cache.0.lock().expect(POISONED_LOCK_ERR);
         let trie_cache: &mut TrieCache = &mut *guard;
         trie_cache.cache_state = CacheState::CachingShard;
@@ -315,6 +319,10 @@ impl TrieStorage for TrieCachingStorage {
     }
 
     fn as_caching_storage(&self) -> Option<&TrieCachingStorage> {
+        Some(self)
+    }
+
+    fn as_caching_storage_mut(&mut self) -> Option<&mut TrieCachingStorage> {
         Some(self)
     }
 }

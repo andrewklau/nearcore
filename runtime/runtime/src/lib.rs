@@ -1183,9 +1183,9 @@ impl Runtime {
             panic!("Can only patch state in sandbox mode");
         }
 
-        let trie = Rc::new(trie);
-        let initial_state = TrieUpdate::new(trie.clone(), root);
-        let mut state_update = TrieUpdate::new(trie.clone(), root);
+        let mut trie = Rc::new(trie);
+        let initial_state = TrieUpdate::new(&mut trie, root);
+        let mut state_update = TrieUpdate::new(&mut trie, root);
         let mut stats = ApplyStats::default();
 
         if let Some(validator_accounts_update) = validator_accounts_update {
